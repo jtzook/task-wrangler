@@ -48,7 +48,7 @@ export const orderTasks = (tasks, taskSubset) => {
   const depMap = {};
 
   for (var task of tasks) {
-    depMap[task.task] = task.deps;
+    depMap[task.task] = task.dependencies;
   }
 
   let orderedDeps = [];
