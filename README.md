@@ -1,2 +1,3 @@
 # task-wrangler
-Functions to order tasks with dependencies using modern JavaScript and not-so-modern lisp-to-JavaScript
+
+Functions to order tasks with dependencies using modern JavaScript and Sibilant, a not-so-modern lisp-to-JavaScript variant.
