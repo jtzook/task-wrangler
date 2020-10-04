@@ -1,0 +1,27 @@
+{
+  "name": "task-wrangler",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "yarn test",
+    "sibilant": "sibilant -x -f src/sibilant/order-tasks.sibilant"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jtzook/task-wrangler.git"
+  },
+  "keywords": [
+    "javascript",
+    "sibilant",
+    "jest"
+  ],
+  "author": "Jared Zook",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jtzook/task-wrangler/issues"
+  },
+  "homepage": "https://github.com/jtzook/task-wrangler#readme",
+  "devDependencies": {
+    "sibilant": "^0.5.6"
+  }
+}

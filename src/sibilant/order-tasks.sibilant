@@ -1,0 +1,322 @@
+;;
+;; order-tasks
+;;
+;; put tasks in correct order using a lisp-to-JS derivative language
+;;
+;; Jared Zook
+;; October 2020
+;;
+
+;;
+;; Algorithm
+;;
+
+;
+; order-tasks(tasks, chosen-tasks)
+;
+; function that returns an ordered list of all task strings to run
+;
+; Input:
+;
+;  - tasks
+;    
+;    a list of task objects that take the form {task: '', dependencies: []}
+;    where 'task' is the task name and 'dependencies' is a list of its task
+;    dependency strings
+;
+;  - chosen-tasks
+;
+;    a list of task name strings from 'tasks' to order given 
+;    dependencies found in 'tasks'
+;
+; Output:
+;
+;   an ordered list of chosen-tasks and its dependencies
+;
+(def order-tasks (tasks chosen-tasks)
+  (when (or (empty? tasks) (empty? chosen-tasks)) [])
+
+  ; closure to aggregate a task's dependencies [] => []
+  (def aggregate-task-deps (deps)
+    (when (empty? deps) [])
+    (var first-dep (get deps 0))
+    (if
+      (= (length deps) 1)
+        (ternary (length (get dep-map first-dep))
+          [...(get-task-subdeps first-dep), first-dep]
+        [first-dep])
+    [
+      ...(aggregate-task-deps [first-dep]),
+      ...(aggregate-task-deps (rest deps)),
+    ])
+  )
+
+  ; closure to aggregate a task's subdependencies
+  (def get-task-subdeps (task-string)
+    (var subdeps [])
+
+    (each task-dep (get dep-map task-string)
+      (var subtask-deps
+        (ternary (not (empty? (get dep-map task-dep)))
+          (aggregate-task-deps (get dep-map task-dep))
+          [task-dep])
+      )
+
+      (set subdeps (length subdeps) task-dep)
+    )
+
+    ; update dep map with new findings
+    (set dep-map task-string subdeps)
+  subdeps)
+
+  ; get shallow map of tasks and dependencies
+
+  (var dep-map {})
+
+  (each task tasks
+    (set dep-map task.task task.dependencies))
+
+  ; iterate over chosen tasks and aggregate
+  ; all of their dependencies in order
+
+  (var ordered-list [])
+
+  (each ct chosen-tasks
+    ; only include chosen-task if it exists in tasks and if it
+    ; hasn't already been included as a dependency of another task
+    (when (and (not (includes? ordered-list ct)) (includes? (keys dep-map) ct))
+      (when (get dep-map ct)
+        (var subtask-deps
+          (ternary (not (empty? (get dep-map ct)))
+            (aggregate-task-deps (get dep-map ct))
+          []))
+        (when (not (empty? subtask-deps))
+          ; update dep-map with newly found dependencies
+          (when (> (length subtask-deps) (length (get dep-map ct)))
+            (set dep-map ct subtask-deps))
+
+          ; logic to iterate through the chosen tasks dependencies
+          ; and determine where they belong in the ordered-list
+          (each st (get dep-map ct)
+            (when (not (includes? ordered-list st))
+              (var i 0
+                   found-idx []
+                   found-deps [])
+                   
+              ; find indices of dependencies that should 
+              ; preceed the new addition
+              (while (< i length(ordered-list))
+                (var existing-dep (get ordered-list i))
+
+                (when (includes? (get dep-map st) existing-dep)
+                  (set found-idx (length found-idx) i)
+                  (set found-deps (length found-deps) (get ordered-list i))
+                )
+
+                (incr i)
+              )
+
+              (var insert-idx
+                (ternary (not (empty? found-idx))
+                  (+ (last found-idx) 1)
+                  (length ordered-list)))
+
+              (var updated-list
+                (append ordered-list.slice(0, insert-idx) st)
+              )
+
+              ; add any remaining tasks after inserting subtask
+              (var rem-tasks ordered-list.slice(insert-idx))
+
+              (when (not (empty? rem-tasks))
+                (var tmp-list updated-list)
+                (assign updated-list
+                  (append updated-list ...[...rem-tasks])))
+
+              (assign ordered-list updated-list)
+            )
+          )
+        )
+
+        (set ordered-list (length ordered-list) ct)
+      )
+    )
+  )
+
+ordered-list)
+
+;;
+;; Date
+;;
+
+(var task-data: [
+  {
+    task: "build fence"
+    dependencies: [
+      "buy supplies",
+      "mow lawn"
+    ]
+  },
+  {
+    task: "mow lawn"
+    dependencies: [
+      "buy gas"
+    ]
+  },
+  {
+    task: "buy supplies"
+    dependencies: [
+      "go to hardware store",
+      "earn money"
+    ]
+  },
+  {
+    task: "buy gas"
+    dependencies: [
+      "go to gas station",
+      "earn money"
+    ]
+  },
+  {
+    task: "go to gas station"
+    dependencies: [
+      "earn money",
+      "get out of bed",
+    ]
+  },
+  {
+    task: "go to hardware store"
+    dependencies: [
+      "earn money",
+      "get out of bed",
+    ]
+  },
+  {
+    task: "earn money"
+    dependencies: [
+      "get out of bed"
+    ]
+  },
+  {
+    task: "get out of bed"
+    dependencies: []
+  }
+])
+
+;;
+;; Tests
+;;
+
+(def run-test (message, data)
+  (def get-task-order-string (task-list)
+    (if
+      (not (length task-list)) ""
+      (= (length task-list) 1) (get task-list 0)
+      (join task-list " -> ")
+    )
+  )
+
+  (var { task-subset, expected } data
+    order-result (order-tasks task-data task-subset)
+    result-message (ternary
+      (= (join ...order-result) (join ...expected)) "PASS" "FAIL"))
+
+  console.log("\nSHOULD", message, "->", result-message)
+  
+  console.log("\nsubtasks", "given:", task-subset)
+
+  (when (match? (regex "FAIL") result-message)
+    console.log(
+      "\nexpected:\n\n", 
+      get-task-order-string(expected)
+    ))
+  
+  console.log(
+    "\nresult:\n\n", 
+    get-task-order-string(order-result), 
+    "\n\n"
+    )
+)
+
+(run-test "remove a subtask that that isn't part of the task set" {
+  'task-subset ["not given", "go to hardware store"]
+  'expected ["get out of bed", "earn money", "go to hardware store"]
+})
+
+(run-test "return correct ordering if given single task with no dependencies" {
+  'task-subset ["get out of bed"]
+  'expected ["get out of bed"]
+})
+
+(run-test "return correct ordering if given a single task with one dependency" {
+  'task-subset ["earn money"]
+  'expected ["get out of bed", "earn money"]
+})
+
+(run-test "return correct ordering if given a single task with two dependencies" {
+  'task-subset ["go to hardware store"]
+  'expected [
+    "get out of bed",
+    "earn money",
+    "go to hardware store",
+  ]
+})
+ 
+(run-test "return correct ordering if given two tasks with same dependency" {
+  'task-subset [
+    "earn money"
+    "go to hardware store"
+  ]
+  'expected [
+    "get out of bed",
+    "earn money",
+    "go to hardware store",
+  ]
+})
+
+(run-test "return correct ordering if given subtasks are unordered" {
+  'task-subset [
+    "go to hardware store"
+    "earn money"
+  ]
+  'expected [
+    "get out of bed",
+    "earn money",
+    "go to hardware store",
+  ]
+})
+
+(run-test "return a correctly ordered list if given an example with multiple dependencies" {
+  'task-subset [
+    "get out of bed"
+    "buy nails"
+    "build fence"
+  ]
+  'expected [
+    "get out of bed",
+    "earn money",
+    "buy gas",
+    "mow lawn",
+    "go to hardware store",
+    "buy supplies"
+    "build fence"
+  ]
+})
+
+(run-test "return a correctly ordered list if given an example with multiple dependencies and unordered subtasks" {
+  'task-subset [
+    "get out of bed"
+    "buy nails"
+    "build fence"
+  ]
+  'expected [
+    "get out of bed",
+    "earn money",
+    "buy gas",
+    "mow lawn",
+    "go to hardware store",
+    "buy supplies"
+    "build fence"
+  ]
+})
+
