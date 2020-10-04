@@ -1,0 +1,38 @@
+{
+  "data": [
+    [
+      {
+        "task": "build a fence",
+        "dependencies": ["buy supplies", "mow lawn"]
+      },
+      {
+        "task": "mow lawn",
+        "dependencies": ["buy gas"]
+      },
+      {
+        "task": "buy supplies",
+        "dependencies": ["go to hardware store", "earn money"]
+      },
+      {
+        "task": "buy gas",
+        "dependencies": ["go to gas station", "earn money"]
+      },
+      {
+        "task": "go to gas station",
+        "dependencies": ["earn money", "get out of bed"]
+      },
+      {
+        "task": "go to hardware store",
+        "dependencies": ["earn money", "get out of bed"]
+      },
+      {
+        "task": "earn money",
+        "dependencies": ["get out of bed"]
+      },
+      {
+        "task": "get out of bed",
+        "dependencies": []
+      }
+    ]
+  ]
+}
