@@ -235,8 +235,13 @@ ordered-list)
     "\nresult:\n\n", 
     get-task-order-string(order-result), 
     "\n\n"
-    )
+  )
 )
+
+(run-test "returns an empty list" {
+  'task-subset []
+  'expected []
+})
 
 (run-test "remove a subtask that that isn't part of the task set" {
   'task-subset ["not given", "go to hardware store"]
