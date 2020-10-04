@@ -2,8 +2,7 @@ export const orderTasks = (tasks, taskSubset) => {
   if (!tasks.length || !taskSubset.length) {
     return [];
   }
-  console.log("taskstaskSubset", tasks);
-  console.log("taskSubset", taskSubset);
+
   const aggregateTaskDeps = (deps) => {
     if (!deps) {
       return [];
@@ -70,6 +69,6 @@ export const orderTasks = (tasks, taskSubset) => {
       orderedDeps.push(st);
     }
   });
-  console.log("output", orderedDeps);
+
   return orderedDeps;
 };

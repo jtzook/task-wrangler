@@ -263,38 +263,38 @@ ordered-list)
   'expected [
     "get out of bed",
     "earn money",
-    "go to hardware store",
+    "go to hardware store"
   ]
 })
  
 (run-test "return correct ordering if given two tasks with same dependency" {
   'task-subset [
-    "earn money"
+    "earn money",
     "go to hardware store"
   ]
   'expected [
     "get out of bed",
     "earn money",
-    "go to hardware store",
+    "go to hardware store"
   ]
 })
 
 (run-test "return correct ordering if given subtasks are unordered" {
   'task-subset [
-    "go to hardware store"
+    "go to hardware store",
     "earn money"
   ]
   'expected [
     "get out of bed",
     "earn money",
-    "go to hardware store",
+    "go to hardware store"
   ]
 })
 
 (run-test "return a correctly ordered list if given an example with multiple dependencies" {
   'task-subset [
-    "get out of bed"
-    "buy nails"
+    "get out of bed",
+    "buy nails",
     "build fence"
   ]
   'expected [
@@ -303,16 +303,16 @@ ordered-list)
     "buy gas",
     "mow lawn",
     "go to hardware store",
-    "buy supplies"
+    "buy supplies",
     "build fence"
   ]
 })
 
 (run-test "return a correctly ordered list if given an example with multiple dependencies and unordered subtasks" {
   'task-subset [
-    "get out of bed"
-    "buy nails"
-    "build fence"
+    "get out of bed",
+    "buy nails",
+    "build fence",
   ]
   'expected [
     "get out of bed",
@@ -320,7 +320,7 @@ ordered-list)
     "buy gas",
     "mow lawn",
     "go to hardware store",
-    "buy supplies"
+    "buy supplies",
     "build fence"
   ]
 })
