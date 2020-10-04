@@ -294,12 +294,13 @@ ordered-list)
 (run-test "return a correctly ordered list if given an example with multiple dependencies" {
   'task-subset [
     "get out of bed",
-    "buy nails",
+    "buy supplies",
     "build fence"
   ]
   'expected [
     "get out of bed",
     "earn money",
+    "go to gas station",
     "buy gas",
     "mow lawn",
     "go to hardware store",
@@ -310,13 +311,14 @@ ordered-list)
 
 (run-test "return a correctly ordered list if given an example with multiple dependencies and unordered subtasks" {
   'task-subset [
-    "get out of bed",
-    "buy nails",
     "build fence",
+    "buy supplies",
+    "get out of bed",
   ]
   'expected [
     "get out of bed",
     "earn money",
+    "go to gas station",
     "buy gas",
     "mow lawn",
     "go to hardware store",

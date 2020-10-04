@@ -28,13 +28,13 @@ describe("orderTasks()", () => {
     expect(order).toEqual(["some task"]);
   });
 
-  it("should return correct ordering if given a single task with one dependency", () => {
+  it("should return the correct ordering if given a single task with one dependency", () => {
     const order = orderTasks(tasks, ["earn money"]);
 
     expect(order).toEqual(["get out of bed", "earn money"]);
   });
 
-  it("should return correct ordering if given a single task with two dependencies", () => {
+  it("should return the correct ordering if given a single task with two dependencies", () => {
     const order = orderTasks(tasks, ["go to hardware store"]);
 
     expect(order).toEqual([
@@ -44,7 +44,7 @@ describe("orderTasks()", () => {
     ]);
   });
 
-  it("should return correct ordering if given two tasks with same dependency", () => {
+  it("should return the correct ordering if given two tasks with same dependency", () => {
     const order = orderTasks(tasks, ["earn money", "go to hardware store"]);
 
     expect(order).toEqual([
@@ -54,21 +54,51 @@ describe("orderTasks()", () => {
     ]);
   });
 
-  // it("should return correct ordering if given subtasks are unordered", () => {
-  //   const order = orderTasks(tasks, ["earn money"]);
+  it("should return the correct ordering if given subtasks are unordered", () => {
+    const order = orderTasks(tasks, ["go to hardware store", "earn money"]);
 
-  //   expect(order).toEqual(["get out of bed", "earn money"]);
-  // });
+    expect(order).toEqual([
+      "get out of bed",
+      "earn money",
+      "go to hardware store",
+    ]);
+  });
 
-  // it("should return a correctly ordered list if given an example with multiple dependencies", () => {
-  //   const order = orderTasks(tasks, ["earn money"]);
+  it("should return a correctly ordered list if given an example with multiple dependencies", () => {
+    const order = orderTasks(tasks, [
+      "get out of bed",
+      "buy supplies",
+      "build fence",
+    ]);
 
-  //   expect(order).toEqual(["get out of bed", "earn money"]);
-  // });
+    expect(order).toEqual([
+      "get out of bed",
+      "earn money",
+      "go to hardware store",
+      "buy supplies",
+      "go to gas station",
+      "buy gas",
+      "mow lawn",
+      "build fence",
+    ]);
+  });
 
-  // it("should return a correctly ordered list if given an example with multiple dependencies and unordered subtasks", () => {
-  //   const order = orderTasks(tasks, ["earn money"]);
+  it("should return a correctly ordered list if given an example with multiple dependencies and unordered subtasks", () => {
+    const order = orderTasks(tasks, [
+      "build fence",
+      "buy supplies",
+      "get out of bed",
+    ]);
 
-  //   expect(order).toEqual(["get out of bed", "earn money"]);
-  // });
+    expect(order).toEqual([
+      "get out of bed",
+      "earn money",
+      "go to hardware store",
+      "buy supplies",
+      "go to gas station",
+      "buy gas",
+      "mow lawn",
+      "build fence",
+    ]);
+  });
 });

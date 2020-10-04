@@ -1,7 +1,7 @@
 {
   "data": [
     {
-      "task": "build a fence",
+      "task": "build fence",
       "dependencies": ["buy supplies", "mow lawn"]
     },
     {
