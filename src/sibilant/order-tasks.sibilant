@@ -43,7 +43,7 @@
     (if
       (= (length deps) 1)
         (ternary (length (get dep-map first-dep))
-          [...(get-task-subdeps first-dep), first-dep]
+          (order-tasks tasks [...(get-task-subdeps first-dep), first-dep])
         [first-dep])
     [
       ...(aggregate-task-deps [first-dep]),
@@ -305,7 +305,7 @@ ordered-list)
     "mow lawn",
     "go to hardware store",
     "buy supplies",
-    "build fence"
+    "build fence",
   ]
 })
 
@@ -323,7 +323,7 @@ ordered-list)
     "mow lawn",
     "go to hardware store",
     "buy supplies",
-    "build fence"
+    "build fence",
   ]
 })
 
