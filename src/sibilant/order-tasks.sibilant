@@ -238,7 +238,7 @@ ordered-list)
   )
 )
 
-(run-test "returns an empty list" {
+(run-test "return an empty list" {
   'task-subset []
   'expected []
 })
