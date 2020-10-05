@@ -67,6 +67,7 @@
 
     ; update dep map with new findings
     (set dep-map task-string subdeps)
+    
   subdeps)
 
   ; get shallow map of tasks and dependencies
@@ -88,8 +89,8 @@
       (when (get dep-map ct)
         (var subtask-deps
           (ternary (not (empty? (get dep-map ct)))
-            (aggregate-task-deps (get dep-map ct))
-          []))
+            (aggregate-task-deps (get dep-map ct)) []))
+
         (when (not (empty? subtask-deps))
           ; update dep-map with newly found dependencies
           (when (> (length subtask-deps) (length (get dep-map ct)))
@@ -106,28 +107,22 @@
               ; find indices of dependencies that should 
               ; preceed the new addition
               (while (< i length(ordered-list))
-                (var existing-dep (get ordered-list i))
-
-                (when (includes? (get dep-map st) existing-dep)
+                (when (includes? (get dep-map st) (get ordered-list i))
                   (set found-idx (length found-idx) i)
-                  (set found-deps (length found-deps) (get ordered-list i))
-                )
+                  (set found-deps (length found-deps) (get ordered-list i)))
 
-                (incr i)
-              )
+                (incr i))
 
               (var insert-idx
                 (ternary (not (empty? found-idx))
                   (+ (last found-idx) 1)
                   (length ordered-list)))
 
-              (var updated-list
-                (append ordered-list.slice(0, insert-idx) st)
-              )
+              (var updated-list (append ordered-list.slice(0, insert-idx) st))
 
-              ; add any remaining tasks after inserting subtask
               (var rem-tasks ordered-list.slice(insert-idx))
 
+              ; add any remaining tasks after inserting subtask
               (when (not (empty? rem-tasks))
                 (var tmp-list updated-list)
                 (assign updated-list
